@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- home -->
+    <string name="status_not_activated">Não ativado</string>
+    <string name="status_tap_to_activate">Toque para ativar pelo Shizuku</string>
+    <string name="dev_keyboard">Teclado: %1$s</string>
+    <string name="dev_keyboard_none">Nenhum teclado reconhecido</string>
+    <string name="dev_mouse">Mouse: %1$s</string>
+    <string name="dev_mouse_none">Nenhum mouse reconhecido</string>
+
+    <!-- activation -->
+    <string name="act_status_shizuku">Ativo via Shizuku</string>
+    <string name="act_status_adb">Ativo via Depuração sem fio</string>
+    <string name="act_status_off">Não ativado</string>
+    <string name="act_test">Testar</string>
+    <string name="act_test_area">Área de teste</string>
+    <string name="act_test_running">Testando…</string>
+    <string name="act_test_ok">Toque recebido</string>
+    <string name="act_test_failed">O toque não chegou</string>
+    <string name="act_shizuku_installed">Instalar o Shizuku</string>
+    <string name="act_shizuku_get">Baixar</string>
+    <string name="act_shizuku_running">Iniciar o Shizuku</string>
+    <string name="act_shizuku_running_note">Pela Depuração sem fio ou root.</string>
+    <string name="act_shizuku_open">Abrir</string>
+    <string name="act_shizuku_permission">Autorizar o Klyro</string>
+    <string name="act_shizuku_authorize">Autorizar</string>
+    <string name="act_start_service">Iniciar o serviço</string>
+    <string name="act_start">Iniciar</string>
+    <string name="act_wireless_pair">Parear com o Klyro</string>
+    <string name="act_wireless_note">Para quem não usa o Shizuku (Android 11+).</string>
+    <string name="act_wireless_open">Parear</string>
+
+    <!-- editor -->
+    <string name="editor_add">+ Adicionar</string>
+    <string name="editor_action">Ação: %1$s</string>
+    <string name="editor_no_keyboard">Nenhum teclado reconhecido: conecte um para atribuir teclas</string>
+    <string name="type_tap">Toque</string>
+    <string name="type_repeat">Repetição</string>
+    <string name="type_dpad">Analógico</string>
+    <string name="type_aim">Mira</string>
+    <string name="type_fire">Tiro</string>
+    <string name="action_jump">Pular</string>
+    <string name="action_crouch">Agachar</string>
+    <string name="action_reload">Recarregar</string>
+    <string name="action_interact">Interagir</string>
+    <string name="panel_binding">Tecla ou botão do mouse</string>
+    <string name="panel_key">Atribuição</string>
+    <string name="panel_aim_key">Tecla da mira (trava/destrava o mouse)</string>
+    <string name="panel_dpad_keys">Tecla de cada direção</string>
+    <string name="dir_up">Cima</string>
+    <string name="dir_left">Esquerda</string>
+    <string name="dir_down">Baixo</string>
+    <string name="dir_right">Direita</string>
+    <string name="mouse_left">Esquerdo</string>
+    <string name="mouse_right">Direito</string>
+    <string name="mouse_middle">Meio</string>
+    <string name="panel_no_mouse">Nenhum mouse reconhecido.</string>
+    <string name="panel_clear_binding">Limpar atribuição</string>
+    <string name="panel_listen_hint">Clique em Definir tecla e aperte uma tecla (Ctrl/Shift/Alt + tecla vale) ou clique com um botão do mouse: esquerdo, direito ou do meio.</string>
+    <string name="panel_aim_hint">Área da câmera: com o mouse travado, mexer o mouse arrasta aqui dentro. Para travar e destravar, adicione o controle "Destravar mouse".</string>
+    <string name="panel_waiting">Aperte uma tecla ou clique…</string>
+    <string name="panel_action_name">Ação: %1$s</string>
+    <string name="panel_size">Tamanho · %1$d dp</string>
+    <string name="panel_position">Posição fina (1 dp por toque)</string>
+    <string name="panel_repeat_rate">Velocidade · %1$d toques/s</string>
+    <string name="panel_aim_sensitivity">Sensibilidade da mira · %1$s</string>
+    <string name="panel_dpad_reach">Alcance do analógico · %1$d%%</string>
+    <string name="panel_duplicate">Duplicar</string>
+    <string name="panel_done">Pronto</string>
+    <string name="panel_shortcuts">Atalhos: roda do mouse muda o tamanho · Ctrl+D duplica · Ctrl+Del remove · clique fora para tirar a seleção</string>
+
+    <!-- profiles -->
+    <string name="profile_new">Novo perfil</string>
+    <string name="profile_new_name">Perfil %1$d</string>
+    <string name="profile_copy_name">%1$s (cópia)</string>
+    <string name="profile_rename">Renomear</string>
+    <string name="profile_duplicate">Duplicar perfil</string>
+    <string name="profile_export">Exportar (copiar)</string>
+    <string name="profile_import">Importar (colar)</string>
+    <string name="profile_delete">Excluir perfil</string>
+    <string name="profile_exported">Perfil copiado: cole onde quiser guardar ou compartilhar</string>
+    <string name="profile_import_invalid">A área de transferência não tem um perfil do Klyro</string>
+    <string name="profile_imported">Perfil \"%1$s\" importado</string>
+
+    <!-- overlay -->
+    <string name="overlay_profile">Perfil</string>
+    <string name="overlay_keyboard_ok">Teclado reconhecido</string>
+    <string name="overlay_keyboard_off">Nenhum teclado reconhecido</string>
+    <string name="overlay_mouse_ok">Mouse reconhecido</string>
+    <string name="overlay_mouse_off">Nenhum mouse reconhecido</string>
+    <string name="play_mouse_locked_esc">Mouse travado</string>
+    <string name="play_keyboard_missing">Teclado desconectado · seu perfil continua salvo</string>
+    <string name="play_mouse_missing">Mouse desconectado · seu perfil continua salvo</string>
+    <string name="palette_title">Adicionar controles</string>
+    <string name="palette_hint">Arraste um controle até o jogo, no ponto onde ele deve tocar. Um toque coloca no meio.</string>
+    <string name="overlay_touch_ok_shizuku">Toques e teclado prontos (Shizuku)</string>
+    <string name="type_unlock">Destravar mouse</string>
+    <string name="panel_unlock_key">Tecla que trava/destrava o mouse</string>
+    <string name="panel_unlock_hint">No jogo, aperte esta tecla para travar o mouse (mira) ou destravar. Ao destravar, o cursor aparece onde este controle está.</string>
+    <string name="overlay_lock_mouse_nokey">Travar mouse</string>
+    <string name="overlay_lock_hint_nokey">Para travar e destravar por uma tecla, adicione o controle \"Destravar mouse\" no editor e escolha a tecla.</string>
+    <string name="panel_define_key">Definir tecla</string>
+    <string name="panel_cancel_listen">Cancelar</string>
+    <string name="panel_aim_key_hint">Clique em Definir tecla e aperte uma tecla ou clique com um botão do mouse. No jogo, ela trava o mouse para mirar e destrava de novo.</string>
+</resources>

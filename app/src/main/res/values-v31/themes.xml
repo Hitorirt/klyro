@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash do Android 12+: fundo do Klyro com o ícone do app no centro. -->
+    <style name="Theme.Klyro" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/klyro_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowSplashScreenBackground">@color/klyro_background</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/klyro_splash</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/klyro_background</item>
+    </style>
+</resources>

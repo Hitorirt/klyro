@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- home -->
+    <string name="status_not_activated">Not activated</string>
+    <string name="status_tap_to_activate">Tap to activate with Shizuku</string>
+    <string name="dev_keyboard">Keyboard: %1$s</string>
+    <string name="dev_keyboard_none">No keyboard recognized</string>
+    <string name="dev_mouse">Mouse: %1$s</string>
+    <string name="dev_mouse_none">No mouse recognized</string>
+
+    <!-- activation -->
+    <string name="act_status_shizuku">Active via Shizuku</string>
+    <string name="act_status_adb">Active via Wireless debugging</string>
+    <string name="act_status_off">Not active</string>
+    <string name="act_test">Test</string>
+    <string name="act_test_area">Test area</string>
+    <string name="act_test_running">Testing…</string>
+    <string name="act_test_ok">Touch received</string>
+    <string name="act_test_failed">The touch did not arrive</string>
+    <string name="act_shizuku_installed">Install Shizuku</string>
+    <string name="act_shizuku_get">Download</string>
+    <string name="act_shizuku_running">Start Shizuku</string>
+    <string name="act_shizuku_running_note">Via Wireless debugging or root.</string>
+    <string name="act_shizuku_open">Open</string>
+    <string name="act_shizuku_permission">Allow Klyro</string>
+    <string name="act_shizuku_authorize">Allow</string>
+    <string name="act_start_service">Start the service</string>
+    <string name="act_start">Start</string>
+    <string name="act_wireless_pair">Pair with Klyro</string>
+    <string name="act_wireless_note">For those not using Shizuku (Android 11+).</string>
+    <string name="act_wireless_open">Pair</string>
+
+    <!-- editor -->
+    <string name="editor_add">+ Add</string>
+    <string name="editor_action">Action: %1$s</string>
+    <string name="editor_no_keyboard">No keyboard recognized: connect one to assign keys</string>
+    <string name="type_tap">Tap</string>
+    <string name="type_repeat">Repeat</string>
+    <string name="type_dpad">Analog</string>
+    <string name="type_aim">Aim</string>
+    <string name="type_fire">Fire</string>
+    <string name="action_jump">Jump</string>
+    <string name="action_crouch">Crouch</string>
+    <string name="action_reload">Reload</string>
+    <string name="action_interact">Interact</string>
+    <string name="panel_binding">Key or mouse button</string>
+    <string name="panel_key">Assignment</string>
+    <string name="panel_aim_key">Aim key (locks/unlocks the mouse)</string>
+    <string name="panel_dpad_keys">Keys for each direction</string>
+    <string name="dir_up">Up</string>
+    <string name="dir_left">Left</string>
+    <string name="dir_down">Down</string>
+    <string name="dir_right">Right</string>
+    <string name="mouse_left">Left</string>
+    <string name="mouse_right">Right</string>
+    <string name="mouse_middle">Middle</string>
+    <string name="panel_no_mouse">No mouse recognized.</string>
+    <string name="panel_clear_binding">Clear assignment</string>
+    <string name="panel_listen_hint">Click Set key and press a key (Ctrl/Shift/Alt + key works) or click a mouse button: left, right or middle.</string>
+    <string name="panel_aim_hint">Camera area: with the mouse locked, moving the mouse drags inside here. To lock and unlock, add the "Unlock mouse" control.</string>
+    <string name="panel_waiting">Press a key or click…</string>
+    <string name="panel_action_name">Action: %1$s</string>
+    <string name="panel_size">Size · %1$d dp</string>
+    <string name="panel_position">Fine position (1 dp per tap)</string>
+    <string name="panel_repeat_rate">Speed · %1$d taps/s</string>
+    <string name="panel_aim_sensitivity">Aim sensitivity · %1$s</string>
+    <string name="panel_dpad_reach">Analog reach · %1$d%%</string>
+    <string name="panel_duplicate">Duplicate</string>
+    <string name="panel_done">Done</string>
+    <string name="panel_shortcuts">Shortcuts: mouse wheel resizes · Ctrl+D duplicates · Ctrl+Del removes · click outside to deselect</string>
+
+    <!-- profiles -->
+    <string name="profile_new">New profile</string>
+    <string name="profile_new_name">Profile %1$d</string>
+    <string name="profile_copy_name">%1$s (copy)</string>
+    <string name="profile_rename">Rename</string>
+    <string name="profile_duplicate">Duplicate profile</string>
+    <string name="profile_export">Export (copy)</string>
+    <string name="profile_import">Import (paste)</string>
+    <string name="profile_delete">Delete profile</string>
+    <string name="profile_exported">Profile copied: paste it wherever you want to save or share it</string>
+    <string name="profile_import_invalid">The clipboard does not contain a Klyro profile</string>
+    <string name="profile_imported">Profile \"%1$s\" imported</string>
+
+    <!-- overlay -->
+    <string name="overlay_profile">Profile</string>
+    <string name="overlay_keyboard_ok">Keyboard recognized</string>
+    <string name="overlay_keyboard_off">No keyboard recognized</string>
+    <string name="overlay_mouse_ok">Mouse recognized</string>
+    <string name="overlay_mouse_off">No mouse recognized</string>
+    <string name="play_mouse_locked_esc">Mouse locked</string>
+    <string name="play_keyboard_missing">Keyboard disconnected · your profile is kept</string>
+    <string name="play_mouse_missing">Mouse disconnected · your profile is kept</string>
+    <string name="palette_title">Add controls</string>
+    <string name="palette_hint">Drag a control onto the game, where it should tap. Tap it to put it in the middle.</string>
+    <string name="overlay_touch_ok_shizuku">Touches and keyboard ready (Shizuku)</string>
+    <string name="type_unlock">Unlock mouse</string>
+    <string name="panel_unlock_key">Key that locks/unlocks the mouse</string>
+    <string name="panel_unlock_hint">Press this key in the game to lock the mouse (aim) or unlock it. When it unlocks, the cursor appears where this control is.</string>
+    <string name="overlay_lock_mouse_nokey">Lock mouse</string>
+    <string name="overlay_lock_hint_nokey">To lock and unlock with a key, add the \"Unlock mouse\" control in the editor and choose the key.</string>
+    <string name="panel_define_key">Set key</string>
+    <string name="panel_cancel_listen">Cancel</string>
+    <string name="panel_aim_key_hint">Click Set key and press a key or click a mouse button. In the game it locks the mouse to aim and unlocks it again.</string>
+</resources>

@@ -1,0 +1,106 @@
+<resources>
+    <string name="import_config">Importar config do Klyro</string>
+    <string name="lock_no_mouse">Este aparelho não entrega o movimento do mouse para apps (comum em emuladores). A mira com mouse travado funciona em celular com mouse USB ou Bluetooth.</string>
+    <string name="perm_title">Permissões</string>
+    <string name="lang_title">Idioma</string>
+    <string name="perm_background">Rodar em segundo plano</string>
+    <string name="perm_background_note">Sem otimização de bateria, o Android não pausa o Klyro durante o jogo.</string>
+    <string name="perm_allow">Permitir</string>
+    <!-- common -->
+    <string name="add">Adicionar</string>
+    <string name="back">Voltar</string>
+    <string name="close">Fechar</string>
+    <string name="remove">Remover</string>
+    <string name="play">Jogar</string>
+    <string name="step_n">Passo %1$d</string>
+
+    <!-- status -->
+    <string name="status_connected">Klyro está conectado</string>
+    <string name="status_connecting">Conectando…</string>
+    <string name="status_disconnected">Klyro está desconectado</string>
+    <string name="status_pairing_required">É preciso parear</string>
+    <string name="status_summary">Versão 0.1.0 alfa · toque para ativar</string>
+    <string name="activated">Klyro ativado</string>
+
+    <!-- home -->
+    <string name="devices_title">Dispositivos conectados</string>
+    <string name="devices_empty">Nenhum teclado ou mouse conectado</string>
+    <string name="editor_title">Editor de mapeamento</string>
+    <string name="editor_summary">Abra o jogo, toque no botão flutuante e escolha \"Editar botões no jogo\".</string>
+    <string name="my_games">Meus jogos</string>
+    <string name="no_games">Nenhum jogo ainda. Toque em + para adicionar.</string>
+    <string name="add_game">Adicionar jogo</string>
+    <string name="search_apps">Buscar apps</string>
+    <string name="remove_game_title">Remover jogo</string>
+    <string name="remove_game_message">Remover %1$s dos seus jogos?</string>
+
+    <!-- activation -->
+    <string name="activation_title">Configurações</string>
+    <string name="activation_summary">Use o Shizuku ou a Depuração sem fio para ativar o Klyro</string>
+    <string name="method_shizuku">Shizuku</string>
+    <string name="method_wireless">Depuração sem fio</string>
+
+    <!-- pairing -->
+    <string name="pairing_title">Pareamento</string>
+    <string name="pairing_notifications_required">Permita as notificações: é por elas que você digita o código.</string>
+    <string name="pairing_allow_notifications">Permitir</string>
+    <string name="pairing_notifications_ok">Uma notificação do Klyro vai te ajudar a terminar o pareamento e a ativação.</string>
+    <string name="pairing_step1">Abra a Depuração sem fio</string>
+    <string name="pairing_step1_note">Toque em \"Parear dispositivo com código\".</string>
+    <string name="pairing_open_developer">Abrir</string>
+    <string name="pairing_step2">Digite o código na notificação</string>
+    <string name="pairing_step3">Ativar o Klyro</string>
+    <string name="pairing_step3_note">Se falhar, desligue e ligue a Depuração sem fio e pareie de novo.</string>
+    <string name="pairing_activate">Ativar</string>
+    <string name="pairing_code_label">Código de pareamento</string>
+    <string name="pairing_enter_code">Digitar código de pareamento</string>
+    <string name="pairing_service_found">Serviço de pareamento encontrado</string>
+    <string name="pairing_done">Dispositivo pareado com sucesso</string>
+    <string name="pairing_failed">Não foi possível parear</string>
+    <string name="channel_pairing">Pareamento</string>
+    <string name="channel_pairing_status">Status do pareamento</string>
+
+    <!-- editor -->
+    <string name="editor_add_button">+ Botão</string>
+    <string name="editor_add_fire">+ Tiro</string>
+    <string name="editor_empty">Adicione botões e arraste por cima dos controles do jogo.</string>
+
+    <!-- overlay -->
+    <string name="channel_overlay">Overlay</string>
+    <string name="overlay_running">Klyro está rodando</string>
+    <string name="overlay_running_summary">Toque no botão flutuante para abrir o painel.</string>
+    <string name="overlay_stop">Parar overlay</string>
+    <string name="overlay_no_game">Nenhum jogo selecionado</string>
+    <string name="overlay_edit_buttons">Editar botões no jogo</string>
+    <string name="overlay_show_buttons">Mostrar botões no jogo</string>
+    <plurals name="overlay_button_count">
+        <item quantity="one">%1$d botão mapeado</item>
+        <item quantity="other">%1$d botões mapeados</item>
+    </plurals>
+    <string name="editor_add_repeat">+ Repetido</string>
+    <string name="editor_add_dpad">+ Analógico</string>
+    <string name="editor_add_aim">+ Mira</string>
+    <string name="editor_slower">Mais lento</string>
+    <string name="editor_faster">Mais rápido</string>
+    <string name="editor_taps_per_second">%1$d toques/s</string>
+    <string name="editor_dpad_hint">Analógico: W A S D (ou as setas) movem. Arraste por cima do joystick do jogo.</string>
+    <string name="editor_aim_hint">Área de mira: com o mouse travado, mexer o mouse arrasta aqui (câmera). Coloque na parte livre da tela.</string>
+    <string name="editor_fire_hint">Tiro: com o mouse travado, o clique esquerdo toca aqui.</string>
+    <string name="overlay_controls_title">Controles do jogo</string>
+    <string name="overlay_controls_on">Controles ativos</string>
+    <string name="overlay_controls_on_hint">Desligue para digitar no chat do jogo</string>
+    <string name="overlay_opacity">Opacidade · %1$d%%</string>
+    <string name="overlay_sensitivity">Sensibilidade do mouse · %1$s</string>
+    <string name="overlay_lock_mouse">Travar mouse (%1$s)</string>
+    <string name="overlay_lock_hint">Aperte %1$s para travar ou destravar o mouse. Troque a tecla no controle \"Destravar mouse\" do editor.</string>
+    <string name="overlay_adb_ok">ADB conectado</string>
+    <string name="overlay_adb_off">ADB desconectado: ative no app</string>
+    <string name="overlay_touch_ok">Toques prontos</string>
+    <string name="overlay_touch_off">Serviço de toques desligado</string>
+    <string name="overlay_touch_start">Ligar toques</string>
+    <string name="play_mouse_locked">Mouse travado · %1$s para soltar</string>
+    <string name="editor_save">Salvar</string>
+    <string name="editor_cancel">Cancelar</string>
+    <string name="editor_hint">Arraste os botões por cima dos controles do jogo. Toque num botão para escolher a tecla.</string>
+    <string name="editor_press_key">Agora aperte no teclado a tecla deste botão.</string>
+</resources>

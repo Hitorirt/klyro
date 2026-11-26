@@ -1,0 +1,108 @@
+<resources>
+    <string name="app_name">Klyro</string>
+    <string name="import_config">Import Klyro config</string>
+    <string name="lock_no_mouse">This device does not pass mouse movement to apps (common on emulators). Mouse-lock aiming works on a phone with a USB or Bluetooth mouse.</string>
+    <string name="perm_title">Permissions</string>
+    <string name="lang_title">Language</string>
+    <string name="perm_background">Run in background</string>
+    <string name="perm_background_note">Without battery optimization, Android will not pause Klyro while you play.</string>
+    <string name="perm_allow">Allow</string>
+
+    <!-- common -->
+    <string name="add">Add</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="remove">Remove</string>
+    <string name="play">Play</string>
+    <string name="step_n">Step %1$d</string>
+
+    <!-- status -->
+    <string name="status_connected">Klyro is connected</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_disconnected">Klyro is disconnected</string>
+    <string name="status_pairing_required">Pairing required</string>
+    <string name="status_summary">Version 0.1.0 alpha · tap to activate</string>
+    <string name="activated">Klyro activated</string>
+
+    <!-- home -->
+    <string name="devices_title">Connected devices</string>
+    <string name="devices_empty">No keyboard or mouse connected</string>
+    <string name="editor_title">Mapping editor</string>
+    <string name="editor_summary">Open the game, tap the floating button and choose \"Edit buttons on the game\".</string>
+    <string name="my_games">My games</string>
+    <string name="no_games">No games yet. Tap + to add one.</string>
+    <string name="add_game">Add game</string>
+    <string name="search_apps">Search apps</string>
+    <string name="remove_game_title">Remove game</string>
+    <string name="remove_game_message">Remove %1$s from your games?</string>
+
+    <!-- activation -->
+    <string name="activation_title">Settings</string>
+    <string name="activation_summary">Use Shizuku or Wireless Debugging to activate Klyro</string>
+    <string name="method_shizuku">Shizuku</string>
+    <string name="method_wireless">Wireless debugging</string>
+
+    <!-- pairing -->
+    <string name="pairing_title">Pairing</string>
+    <string name="pairing_notifications_required">Allow notifications: you type the code through them.</string>
+    <string name="pairing_allow_notifications">Allow</string>
+    <string name="pairing_notifications_ok">A Klyro notification will help you finish pairing and activation.</string>
+    <string name="pairing_step1">Open Wireless debugging</string>
+    <string name="pairing_step1_note">Tap \"Pair device with pairing code\".</string>
+    <string name="pairing_open_developer">Open</string>
+    <string name="pairing_step2">Type the code in the notification</string>
+    <string name="pairing_step3">Activate Klyro</string>
+    <string name="pairing_step3_note">If it fails, toggle Wireless debugging and pair again.</string>
+    <string name="pairing_activate">Activate</string>
+    <string name="pairing_code_label">Pairing code</string>
+    <string name="pairing_enter_code">Enter pairing code</string>
+    <string name="pairing_service_found">Pairing service found</string>
+    <string name="pairing_done">Device paired successfully</string>
+    <string name="pairing_failed">Failed to pair device</string>
+    <string name="channel_pairing">Pairing</string>
+    <string name="channel_pairing_status">Pairing status</string>
+
+    <!-- editor -->
+    <string name="editor_add_button">+ Button</string>
+    <string name="editor_add_fire">+ Fire</string>
+    <string name="editor_empty">Add buttons and drag them over the game controls.</string>
+
+    <!-- overlay -->
+    <string name="channel_overlay">Overlay</string>
+    <string name="overlay_running">Klyro is running</string>
+    <string name="overlay_running_summary">Tap the floating button to open the panel.</string>
+    <string name="overlay_stop">Stop overlay</string>
+    <string name="overlay_no_game">No game selected</string>
+    <string name="overlay_edit_buttons">Edit buttons on the game</string>
+    <string name="overlay_show_buttons">Show buttons on the game</string>
+    <plurals name="overlay_button_count">
+        <item quantity="one">%1$d button mapped</item>
+        <item quantity="other">%1$d buttons mapped</item>
+    </plurals>
+    <string name="editor_add_repeat">+ Repeat</string>
+    <string name="editor_add_dpad">+ Analog</string>
+    <string name="editor_add_aim">+ Aim</string>
+    <string name="editor_slower">Slower</string>
+    <string name="editor_faster">Faster</string>
+    <string name="editor_taps_per_second">%1$d taps/s</string>
+    <string name="editor_dpad_hint">Analog stick: W A S D (or arrows) move it. Drag it over the game\'s joystick.</string>
+    <string name="editor_aim_hint">Aim area: with the mouse locked, moving the mouse drags here (camera). Put it over the free area of the screen.</string>
+    <string name="editor_fire_hint">Fire: with the mouse locked, the left click taps here.</string>
+    <string name="overlay_controls_title">Game controls</string>
+    <string name="overlay_controls_on">Controls active</string>
+    <string name="overlay_controls_on_hint">Turn off to type in the game chat</string>
+    <string name="overlay_opacity">Opacity · %1$d%%</string>
+    <string name="overlay_sensitivity">Mouse sensitivity · %1$s</string>
+    <string name="overlay_lock_mouse">Lock mouse (%1$s)</string>
+    <string name="overlay_lock_hint">Press %1$s to lock or unlock the mouse. Change the key on the \"Unlock mouse\" control in the editor.</string>
+    <string name="overlay_adb_ok">ADB connected</string>
+    <string name="overlay_adb_off">ADB disconnected: activate it in the app</string>
+    <string name="overlay_touch_ok">Touches ready</string>
+    <string name="overlay_touch_off">Touch service off</string>
+    <string name="overlay_touch_start">Start touches</string>
+    <string name="play_mouse_locked">Mouse locked · %1$s to unlock</string>
+    <string name="editor_save">Save</string>
+    <string name="editor_cancel">Cancel</string>
+    <string name="editor_hint">Drag the buttons over the game controls. Tap a button to choose its key.</string>
+    <string name="editor_press_key">Now press the key on your keyboard for this button.</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash antes do Android 12: fundo do Klyro com o mascote no centro. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/klyro_background" />
+    <item android:width="200dp" android:height="115dp" android:gravity="center">
+        <bitmap android:src="@drawable/klyro_splash_legacy" android:gravity="fill" />
+    </item>
+</layer-list>
