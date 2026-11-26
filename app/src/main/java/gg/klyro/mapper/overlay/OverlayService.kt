@@ -131,6 +131,15 @@ class OverlayService : LifecycleService(), SavedStateRegistryOwner {
             androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED,
         )
         startWifiWatch()
+        wm = getSystemService(WindowManager::class.java)
+        mappings = MappingRepository(this)
+        injector = TouchInjector.get(this)
+        val dm = resources.displayMetrics
+        val screenW = maxOf(dm.widthPixels, dm.heightPixels).toFloat()
+        val screenH = minOf(dm.widthPixels, dm.heightPixels).toFloat()
+        engine = MappingEngine(injector, dm.density, screenW, screenH)
+        router = InputRouter(engine, injector)
+        injector.addInputListener(inputListener)
         gg.klyro.mapper.mapping.Hotkeys.load(this)
         injector.sendIgnoredDevices()
         // Tecla de liga/desliga e parada de emergência chegam pela thread do servidor: volta pra principal.
@@ -154,15 +163,6 @@ class OverlayService : LifecycleService(), SavedStateRegistryOwner {
                 android.widget.Toast.makeText(this@OverlayService, gg.klyro.mapper.ui.tr("Emergency stop: controls off", "Parada de emergência: controles desligados"), android.widget.Toast.LENGTH_LONG).show()
             }
         }
-        wm = getSystemService(WindowManager::class.java)
-        mappings = MappingRepository(this)
-        injector = TouchInjector.get(this)
-        val dm = resources.displayMetrics
-        val screenW = maxOf(dm.widthPixels, dm.heightPixels).toFloat()
-        val screenH = minOf(dm.widthPixels, dm.heightPixels).toFloat()
-        engine = MappingEngine(injector, dm.density, screenW, screenH)
-        router = InputRouter(engine, injector)
-        injector.addInputListener(inputListener)
         lifecycleScope.launch {
             router.locked.collect {
                 locked.value = it
