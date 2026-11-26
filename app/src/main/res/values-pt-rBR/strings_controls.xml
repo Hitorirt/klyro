@@ -95,6 +95,8 @@
     <string name="palette_hint">Arraste um controle até o jogo, no ponto onde ele deve tocar. Um toque coloca no meio.</string>
     <string name="overlay_touch_ok_shizuku">Toques e teclado prontos (Shizuku)</string>
     <string name="type_unlock">Destravar mouse</string>
+    <string name="type_layer">Trocar camada</string>
+    <string name="type_wheel_cycle">Rodinha (ciclo)</string>
     <string name="panel_unlock_key">Tecla que trava/destrava o mouse</string>
     <string name="panel_unlock_hint">No jogo, aperte esta tecla para travar o mouse (mira) ou destravar. Ao destravar, o cursor aparece onde este controle está.</string>
     <string name="overlay_lock_mouse_nokey">Travar mouse</string>

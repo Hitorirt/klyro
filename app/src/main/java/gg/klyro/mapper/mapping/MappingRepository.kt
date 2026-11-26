@@ -22,6 +22,30 @@ data class ControlsSettings(
     val statsStyle: Int = 0,
 )
 
+/**
+ * Atalhos globais (fora do perfil): tecla que liga/desliga os controles e aparelhos ignorados.
+ * Ficam em "main" para a tela de configurações e o overlay lerem a mesma coisa.
+ */
+object Hotkeys {
+    /** Tecla que liga/desliga os controles (0 = nenhuma). */
+    @Volatile var toggleKey: Int = 0
+    /** Nomes dos teclados/mouses que o Klyro deve ignorar. */
+    @Volatile var ignoredDevices: Set<String> = emptySet()
+
+    fun load(context: android.content.Context) {
+        val p = context.getSharedPreferences("main", android.content.Context.MODE_PRIVATE)
+        toggleKey = p.getInt("toggleKey", KeyEvent.KEYCODE_F12)
+        ignoredDevices = p.getStringSet("ignoredDevices", emptySet())?.toSet() ?: emptySet()
+    }
+
+    fun save(context: android.content.Context) {
+        context.getSharedPreferences("main", android.content.Context.MODE_PRIVATE).edit()
+            .putInt("toggleKey", toggleKey)
+            .putStringSet("ignoredDevices", ignoredDevices)
+            .apply()
+    }
+}
+
 /** Um perfil de controles de um jogo. */
 data class Profile(val id: String, val name: String, val mapping: HudMapping)
 
@@ -286,6 +310,11 @@ class MappingRepository(context: Context) {
                     .put("releaseIdle", c.releaseIdle)
                     .put("rapidFire", c.rapidFire)
                     .put("color", c.color)
+                    .put("trigger", c.trigger.name)
+                    .put("holdMs", c.holdMs)
+                    .put("layer", c.layer)
+                    .put("targetLayer", c.targetLayer)
+                    .put("cycleIds", JSONArray().apply { c.cycleIds.forEach { put(it) } })
                     .put(
                         "dpad",
                         JSONObject()
@@ -331,6 +360,11 @@ class MappingRepository(context: Context) {
             releaseIdle = o.optBoolean("releaseIdle", true),
             rapidFire = o.optBoolean("rapidFire", false),
             color = o.optLong("color", 0L),
+            trigger = runCatching { Trigger.valueOf(o.optString("trigger", "Press")) }.getOrDefault(Trigger.Press),
+            holdMs = o.optInt("holdMs", 300),
+            layer = o.optInt("layer", 0),
+            targetLayer = o.optInt("targetLayer", 1),
+            cycleIds = o.optJSONArray("cycleIds")?.let { a -> List(a.length()) { a.getInt(it) } } ?: emptyList(),
             dpad = if (d == null) DpadKeys() else DpadKeys(
                 up = d.optJSONObject("up")?.let(::bindingFromJson) ?: DpadKeys().up,
                 left = d.optJSONObject("left")?.let(::bindingFromJson) ?: DpadKeys().left,

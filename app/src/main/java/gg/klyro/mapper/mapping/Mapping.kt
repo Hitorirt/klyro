@@ -24,10 +24,26 @@ enum class MappingType {
      * aparece quando o mouse é destravado.
      */
     MouseUnlock,
+    /** Tecla que troca a camada de controles (ex.: modo a pé / modo veículo). */
+    LayerSwitch,
+    /** Rodinha do mouse percorre um grupo de botões em ordem (ex.: armas 1 → 2 → 3 → 1). */
+    WheelCycle,
+}
+
+/** Como a tecla dispara um botão. */
+enum class Trigger {
+    /** Segura enquanto a tecla estiver apertada (padrão). */
+    Press,
+    /** Toque rápido ao soltar, se soltou antes de [MappingComponent.holdMs]. */
+    Tap,
+    /** Só toca depois de segurar por [MappingComponent.holdMs]; solta junto com a tecla. */
+    Hold,
+    /** Toque rápido no segundo aperto em menos de 250 ms. */
+    DoubleTap,
 }
 
 /** Botões do mouse que podem ser atribuídos. */
-enum class MouseButton { None, Left, Right, Middle }
+enum class MouseButton { None, Left, Right, Middle, WheelUp, WheelDown }
 
 /** Normaliza modificadores esquerdo/direito para que Ctrl, Shift e Alt funcionem dos dois lados do teclado. */
 fun normalizeKeyCode(code: Int): Int = when (code) {
@@ -110,12 +126,23 @@ data class MappingComponent(
     val rapidFire: Boolean = false,
     /** Cor do botão (ARGB); 0 = cor padrão do tipo. */
     val color: Long = 0L,
+    /** Como a tecla dispara (só botões de toque). */
+    val trigger: Trigger = Trigger.Press,
+    /** Tempo de "segurar" para [Trigger.Tap] e [Trigger.Hold], em ms. */
+    val holdMs: Int = 300,
+    /** Camada do controle: 0 = sempre ativo; 1 a 3 = só quando essa camada estiver ligada. */
+    val layer: Int = 0,
+    /** Troca de camada: qual camada a tecla liga/desliga. */
+    val targetLayer: Int = 1,
+    /** Rodinha: ids dos botões do grupo, na ordem. */
+    val cycleIds: List<Int> = emptyList(),
 ) {
     /** Controle ainda sem atribuição (mostrado como "aguardando tecla"). */
     val needsBinding: Boolean
         get() = when (type) {
             MappingType.Dpad -> dpad.all().any { !it.isSet }
             MappingType.Aim -> false // a mira não tem tecla: quem trava é o "Destravar mouse"
+            MappingType.WheelCycle -> cycleIds.isEmpty()
             else -> !binding.isSet
         }
 }

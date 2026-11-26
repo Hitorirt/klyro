@@ -95,6 +95,8 @@
     <string name="palette_hint">Drag a control onto the game, where it should tap. Tap it to put it in the middle.</string>
     <string name="overlay_touch_ok_shizuku">Touches and keyboard ready (Shizuku)</string>
     <string name="type_unlock">Unlock mouse</string>
+    <string name="type_layer">Layer switch</string>
+    <string name="type_wheel_cycle">Wheel cycle</string>
     <string name="panel_unlock_key">Key that locks/unlocks the mouse</string>
     <string name="panel_unlock_hint">Press this key in the game to lock the mouse (aim) or unlock it. When it unlocks, the cursor appears where this control is.</string>
     <string name="overlay_lock_mouse_nokey">Lock mouse</string>

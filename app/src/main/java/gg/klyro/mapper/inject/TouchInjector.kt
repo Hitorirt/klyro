@@ -141,6 +141,12 @@ class TouchInjector private constructor(private val context: Context) {
 
     @Volatile private var touchPassOn = false
 
+    /** Manda ao servidor os aparelhos que devem ser ignorados (também ao reconectar). */
+    fun sendIgnoredDevices() {
+        val names = gg.klyro.mapper.mapping.Hotkeys.ignoredDevices.joinToString("\n")
+        send(InjectServer.OP_IGNORE_DEVICES) { writeUTF(names) }
+    }
+
     /** Repasse do touch (ver InjectServer): ligado junto com os controles do jogo. */
     fun touchPassthrough(on: Boolean) {
         touchPassOn = on
@@ -200,6 +206,7 @@ class TouchInjector private constructor(private val context: Context) {
             _status.value = InjectStatus(if (method == ActivationMethod.Shizuku) Backend.Shizuku else Backend.Adb)
             Log.i(TAG, "conectado ao servidor ($method)")
             if (touchPassOn) sendTouchPass()
+            sendIgnoredDevices()
             true
         } catch (_: Exception) {
             false

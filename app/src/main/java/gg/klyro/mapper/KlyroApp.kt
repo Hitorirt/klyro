@@ -11,6 +11,7 @@ class KlyroApp : Application() {
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
+        gg.klyro.mapper.mapping.Hotkeys.load(this)
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package gg.klyro.mapper.engine
 
+import gg.klyro.mapper.mapping.Trigger
 import android.view.KeyEvent
 import gg.klyro.mapper.inject.TouchInjector
 import gg.klyro.mapper.mapping.ControlsSettings
@@ -94,6 +95,91 @@ class MappingEngine(
     fun unlockPoint(): Pair<Float, Float>? =
         mapping.components.firstOrNull { it.type == MappingType.MouseUnlock }?.let { cx(it) to cy(it) }
 
+    // ---------- Camadas ----------
+    private val _layer = kotlinx.coroutines.flow.MutableStateFlow(0)
+    /** Camada ligada (0 = nenhuma: só os controles "sempre"). */
+    val activeLayer: kotlinx.coroutines.flow.StateFlow<Int> = _layer
+
+    private fun visible(c: MappingComponent) = c.layer == 0 || c.layer == _layer.value
+
+    private fun switchLayer(target: Int) {
+        releaseAll()
+        _layer.value = if (_layer.value == target) 0 else target
+    }
+
+    // ---------- Toque, segurar, toque duplo ----------
+    private val keyDownAt = HashMap<Int, Long>()
+    private val lastTapAt = HashMap<Int, Long>()
+    private val holdJobs = HashMap<Int, Job>()
+    private val holding = HashSet<Int>()
+
+    /** Toque rápido num botão (40 ms). */
+    private fun quickTap(c: MappingComponent) {
+        scope.launch {
+            injector.down(pid(c), cx(c), cy(c))
+            delay(40)
+            injector.up(pid(c))
+        }
+    }
+
+    private fun triggerDown(c: MappingComponent) {
+        when (c.trigger) {
+            Trigger.Press -> press(c)
+            Trigger.Tap -> keyDownAt[c.id] = android.os.SystemClock.uptimeMillis()
+            Trigger.Hold -> {
+                holdJobs.remove(c.id)?.cancel()
+                holdJobs[c.id] = scope.launch {
+                    delay(c.holdMs.toLong().coerceIn(100, 2000))
+                    synchronized(this@MappingEngine) { holding.add(c.id); press(c) }
+                }
+            }
+            Trigger.DoubleTap -> {
+                val now = android.os.SystemClock.uptimeMillis()
+                val last = lastTapAt[c.id] ?: 0L
+                if (now - last < 250) {
+                    lastTapAt.remove(c.id)
+                    quickTap(c)
+                } else {
+                    lastTapAt[c.id] = now
+                }
+            }
+        }
+    }
+
+    private fun triggerUp(c: MappingComponent) {
+        when (c.trigger) {
+            Trigger.Press -> release(c)
+            Trigger.Tap -> {
+                val at = keyDownAt.remove(c.id) ?: return
+                if (android.os.SystemClock.uptimeMillis() - at < c.holdMs) quickTap(c)
+            }
+            Trigger.Hold -> {
+                holdJobs.remove(c.id)?.cancel()
+                if (holding.remove(c.id)) release(c)
+            }
+            Trigger.DoubleTap -> Unit
+        }
+    }
+
+    // ---------- Rodinha ----------
+    private val cycleIndex = HashMap<Int, Int>()
+
+    /** Rodinha do mouse: +1 = para frente (próximo), -1 = para trás (anterior). */
+    @Synchronized
+    fun onWheel(dir: Int) {
+        if (dir == 0) return
+        val button = if (dir > 0) MouseButton.WheelUp else MouseButton.WheelDown
+        mapping.components.filter { visible(it) && it.binding.mouse == button && it.type in TAP_TYPES }.forEach { quickTap(it) }
+        mapping.components.filter { visible(it) && it.type == MappingType.WheelCycle && it.cycleIds.isNotEmpty() }.forEach { cyc ->
+            val targets = cyc.cycleIds.mapNotNull { mapping[it] }
+            if (targets.isEmpty()) return@forEach
+            val cur = cycleIndex[cyc.id]
+            val next = if (cur == null) (if (dir > 0) 0 else targets.size - 1) else Math.floorMod(cur + dir, targets.size)
+            cycleIndex[cyc.id] = next
+            quickTap(targets[next])
+        }
+    }
+
     /** Tecla do teclado. Devolve true se a tecla é usada pelo perfil. */
     @Synchronized
     fun onKey(keyCode: Int, meta: Int, down: Boolean, repeat: Boolean): Boolean {
@@ -101,14 +187,20 @@ class MappingEngine(
         if (down) {
             if (repeat) return activeByKey.containsKey(norm) || dpadUses(keyCode, meta)
             var used = false
-            mapping.components.forEach { c ->
+            mapping.components.filter { visible(it) }.forEach { c ->
                 when (c.type) {
                     MappingType.Button, MappingType.RepeatTap, MappingType.FireButton ->
                         if (c.binding.matchesKey(keyCode, meta)) {
                             used = true
-                            press(c)
+                            triggerDown(c)
                             activeByKey.getOrPut(norm) { mutableListOf() }.add(c.id)
                         }
+                    MappingType.LayerSwitch ->
+                        if (c.binding.matchesKey(keyCode, meta)) {
+                            switchLayer(c.targetLayer)
+                            return true
+                        }
+                    MappingType.WheelCycle -> Unit
                     MappingType.Dpad -> c.dpad.all().forEachIndexed { dir, b ->
                         if (b.matchesKey(keyCode, meta)) {
                             used = true
@@ -124,7 +216,7 @@ class MappingEngine(
         }
         val ids = activeByKey.remove(norm) ?: return false
         ids.forEach { token ->
-            if (token >= 0) mapping[token]?.let { release(it) }
+            if (token >= 0) mapping[token]?.let { triggerUp(it) }
             else {
                 val v = -(token + 1)
                 val id = v / 10
@@ -143,7 +235,7 @@ class MappingEngine(
     @Synchronized
     fun onMouseButton(button: MouseButton, down: Boolean) {
         if (down) {
-            val matched = mapping.components.filter { it.binding.mouse == button && it.type in TAP_TYPES }
+            val matched = mapping.components.filter { visible(it) && it.binding.mouse == button && it.type in TAP_TYPES }
             val targets = if (matched.isNotEmpty()) matched
             else if (button == MouseButton.Left) mapping.components.filter { it.type == MappingType.FireButton }
             else emptyList()
@@ -275,6 +367,10 @@ class MappingEngine(
     fun releaseAll() {
         repeatJobs.values.forEach { it.cancel() }
         repeatJobs.clear()
+        holdJobs.values.forEach { it.cancel() }
+        holdJobs.clear()
+        holding.clear()
+        keyDownAt.clear()
         activeByKey.clear()
         activeByMouse.clear()
         dpadPressed.clear()

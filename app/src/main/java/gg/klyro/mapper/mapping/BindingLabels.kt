@@ -55,6 +55,8 @@ fun InputBinding.label(): String {
         MouseButton.Left -> "Mouse-L"
         MouseButton.Right -> "Mouse-R"
         MouseButton.Middle -> "Mouse-M"
+        MouseButton.WheelUp -> "Wheel ↑"
+        MouseButton.WheelDown -> "Wheel ↓"
         MouseButton.None -> buildString {
             if (modifiers and KeyEvent.META_CTRL_ON != 0) append("Ctrl+")
             if (modifiers and KeyEvent.META_SHIFT_ON != 0) append("Shift+")

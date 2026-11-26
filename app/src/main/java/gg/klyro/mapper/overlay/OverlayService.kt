@@ -131,6 +131,29 @@ class OverlayService : LifecycleService(), SavedStateRegistryOwner {
             androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED,
         )
         startWifiWatch()
+        gg.klyro.mapper.mapping.Hotkeys.load(this)
+        injector.sendIgnoredDevices()
+        // Tecla de liga/desliga e parada de emergência chegam pela thread do servidor: volta pra principal.
+        router.onToggleControls = {
+            lifecycleScope.launch {
+                controlsOn.value = !controlsOn.value
+                router.controlsOn = controlsOn.value && inGame.value
+                android.widget.Toast.makeText(
+                    this@OverlayService,
+                    if (controlsOn.value) gg.klyro.mapper.ui.tr("Controls on", "Controles ligados") else gg.klyro.mapper.ui.tr("Controls off", "Controles desligados"),
+                    android.widget.Toast.LENGTH_SHORT,
+                ).show()
+            }
+        }
+        router.onEmergency = {
+            lifecycleScope.launch {
+                router.setLocked(false)
+                engine.releaseAll()
+                controlsOn.value = false
+                router.controlsOn = false
+                android.widget.Toast.makeText(this@OverlayService, gg.klyro.mapper.ui.tr("Emergency stop: controls off", "Parada de emergência: controles desligados"), android.widget.Toast.LENGTH_LONG).show()
+            }
+        }
         wm = getSystemService(WindowManager::class.java)
         mappings = MappingRepository(this)
         injector = TouchInjector.get(this)
@@ -254,6 +277,7 @@ class OverlayService : LifecycleService(), SavedStateRegistryOwner {
                     wifiBars = wifiBars.value,
                     style = settings.value.statsStyle,
                 ) else null,
+                layer = engine.activeLayer.collectAsState().value,
             )
         }.also {
             wm.addView(

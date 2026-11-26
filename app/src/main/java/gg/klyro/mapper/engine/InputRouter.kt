@@ -39,6 +39,11 @@ class InputRouter(private val engine: MappingEngine, private val injector: Touch
         }
 
     /** Controles ativos (desligar para digitar no chat do jogo). */
+    /** Chamado pela tecla de liga/desliga (o overlay troca o estado e a tela). */
+    @Volatile var onToggleControls: (() -> Unit)? = null
+    /** Chamado pela parada de emergência (Shift + Esc + K). */
+    @Volatile var onEmergency: (() -> Unit)? = null
+
     @Volatile var controlsOn = false
         set(value) {
             // Repasse do touch acompanha os controles (ver InjectServer.setTouchPass).
@@ -76,7 +81,12 @@ class InputRouter(private val engine: MappingEngine, private val injector: Touch
     fun onRaw(ev: RawInput) {
         when (ev.type) {
             Evdev.EV_KEY -> if (ev.code >= LinuxKeys.BTN_LEFT) onMouseButton(ev) else onKey(ev)
-            Evdev.EV_REL -> if (_locked.value && !editing && controlsOn) {
+            Evdev.EV_REL -> if (ev.code == Evdev.REL_WHEEL) {
+                val dir = ev.value.coerceIn(-1, 1)
+                if (dir == 0) return
+                if (editing) _editorKeys.tryEmit(KeyPress(KeyEvent.KEYCODE_UNKNOWN, meta, if (dir > 0) MouseButton.WheelUp else MouseButton.WheelDown))
+                else if (controlsOn) engine.onWheel(dir)
+            } else if (_locked.value && !editing && controlsOn) {
                 val now = SystemClock.uptimeMillis()
                 // Se o PointerCapture já está entregando os deltas do mouse, evita somar duplicado.
                 if (now - lastCapturedMoveTime < 40L) return
@@ -148,6 +158,20 @@ class InputRouter(private val engine: MappingEngine, private val injector: Touch
                 android.util.Log.i("InputRouter", "editor: tecla $code meta $meta")
                 _editorKeys.tryEmit(KeyPress(code, meta))
             }
+            return
+        }
+        // Parada de emergência: Shift + Esc + K solta tudo e desliga os controles.
+        if (down && !repeat && synchronized(keysDown) {
+                keysDown.contains(KeyEvent.KEYCODE_SHIFT_LEFT) && keysDown.contains(KeyEvent.KEYCODE_ESCAPE) && keysDown.contains(KeyEvent.KEYCODE_K)
+            }
+        ) {
+            onEmergency?.invoke()
+            return
+        }
+        // Tecla que liga/desliga os controles (para digitar no chat sem abrir o menu).
+        val toggle = gg.klyro.mapper.mapping.Hotkeys.toggleKey
+        if (toggle != 0 && norm == normalizeKeyCode(toggle)) {
+            if (down && !repeat && freshDown) onToggleControls?.invoke()
             return
         }
         if (!controlsOn) return

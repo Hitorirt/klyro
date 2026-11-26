@@ -36,6 +36,7 @@ object InjectServer {
     const val OP_GRAB_MOUSE: Byte = 5
     const val OP_CURSOR: Byte = 6
     const val OP_TOUCH_PASS: Byte = 7
+    const val OP_IGNORE_DEVICES: Byte = 8
     const val OP_QUIT: Byte = 9
 
     /** Ids dos toques repassados do touchscreen (separados dos ids dos controles). */
@@ -324,7 +325,11 @@ object InjectServer {
         }
     }
 
+    /** Teclados/mouses que o usuário mandou ignorar (por nome). */
+    @Volatile private var ignoredNames: Set<String> = emptySet()
+
     private fun onInput(dev: EvdevDevice, type: Int, code: Int, value: Int) {
+        if (dev.name in ignoredNames && !dev.isTouch) return
         if (type == Evdev.EV_ABS || type == 0) {
             passScale[dev.path]?.let { onTouch(it, type, code, value) }
             return
@@ -393,6 +398,10 @@ object InjectServer {
                     OP_GRAB_MOUSE -> setMouseGrab(input.readByte().toInt() != 0)
                     OP_CURSOR -> moveCursor(input.readFloat(), input.readFloat())
                     OP_TOUCH_PASS -> setTouchPass(input.readByte().toInt() != 0, input.readFloat(), input.readFloat())
+                    OP_IGNORE_DEVICES -> {
+                        ignoredNames = input.readUTF().split('\n').filter { it.isNotBlank() }.toSet()
+                        println("aparelhos ignorados: " + ignoredNames.joinToString())
+                    }
                     OP_QUIT -> {
                         pointers.releaseAll()
                         setMouseGrab(false)

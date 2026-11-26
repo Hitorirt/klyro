@@ -1,5 +1,9 @@
 package gg.klyro.mapper.ui.screens
 
+import androidx.compose.foundation.clickable
+import gg.klyro.mapper.ui.tr
+import gg.klyro.mapper.mapping.Hotkeys
+import android.view.KeyEvent
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -293,6 +297,92 @@ fun ActivationScreen(onBack: () -> Unit, onOpenPairing: () -> Unit) {
                 }
             }
 
+            // Tecla que liga/desliga os controles
+            Text(
+                tr("Controls on/off key", "Tecla de liga/desliga dos controles"),
+                style = MaterialTheme.typography.labelLarge,
+                color = KlyroColors.TextMuted,
+                modifier = Modifier.padding(start = 4.dp, top = 6.dp),
+            )
+            var toggleKey by remember { mutableIntStateOf(Hotkeys.toggleKey) }
+            KlyroCard {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        tr("Press it in-game to turn the controls off and type in the chat. Shift + Esc + K is an emergency stop.",
+                            "Aperte no jogo para desligar os controles e digitar no chat. Shift + Esc + K é a parada de emergência."),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = KlyroColors.TextMuted,
+                    )
+                    val keys = listOf(
+                        0 to tr("None", "Nenhuma"),
+                        KeyEvent.KEYCODE_F8 to "F8", KeyEvent.KEYCODE_F9 to "F9", KeyEvent.KEYCODE_F10 to "F10",
+                        KeyEvent.KEYCODE_F11 to "F11", KeyEvent.KEYCODE_F12 to "F12",
+                        KeyEvent.KEYCODE_BREAK to "Pause", KeyEvent.KEYCODE_SCROLL_LOCK to "ScrLk",
+                    )
+                    androidx.compose.foundation.layout.FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        keys.forEach { (code, name) ->
+                            val on = toggleKey == code
+                            Box(
+                                Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(if (on) KlyroColors.Blue else KlyroColors.CardElevated)
+                                    .clickable {
+                                        toggleKey = code
+                                        Hotkeys.toggleKey = code
+                                        Hotkeys.save(context)
+                                    }
+                                    .padding(horizontal = 12.dp, vertical = 7.dp),
+                            ) { Text(name, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color.White) }
+                        }
+                    }
+                }
+            }
+
+            // Teclados e mouses que o Klyro usa
+            Text(
+                tr("Keyboards and mice", "Teclados e mouses"),
+                style = MaterialTheme.typography.labelLarge,
+                color = KlyroColors.TextMuted,
+                modifier = Modifier.padding(start = 4.dp, top = 6.dp),
+            )
+            val devices = remember { inputDeviceNames() }
+            var ignored by remember { mutableStateOf(Hotkeys.ignoredDevices) }
+            KlyroCard {
+                if (devices.isEmpty()) {
+                    Text(
+                        tr("No keyboard or mouse connected.", "Nenhum teclado ou mouse conectado."),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = KlyroColors.TextMuted,
+                        modifier = Modifier.padding(16.dp),
+                    )
+                }
+                devices.forEachIndexed { i, (name, kind) ->
+                    if (i > 0) KlyroDivider()
+                    val used = name !in ignored
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(name, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color.White, maxLines = 1)
+                            Text(kind, style = MaterialTheme.typography.bodySmall, color = KlyroColors.TextMuted)
+                        }
+                        androidx.compose.material3.Switch(
+                            checked = used,
+                            onCheckedChange = { on ->
+                                ignored = if (on) ignored - name else ignored + name
+                                Hotkeys.ignoredDevices = ignored
+                                Hotkeys.save(context)
+                                injector.sendIgnoredDevices()
+                            },
+                        )
+                    }
+                }
+            }
+
             // Idioma do app (inglês é o padrão)
             Text(
                 stringResource(R.string.lang_title),
@@ -316,3 +406,19 @@ fun ActivationScreen(onBack: () -> Unit, onOpenPairing: () -> Unit) {
 }
 
 private const val TEST_POINTER = 9001
+
+/** Teclados e mouses físicos conectados (nome, tipo). */
+private fun inputDeviceNames(): List<Pair<String, String>> =
+    android.view.InputDevice.getDeviceIds().toList().mapNotNull { android.view.InputDevice.getDevice(it) }
+        .filter { !it.isVirtual }
+        .mapNotNull { d ->
+            val keyboard = d.keyboardType == android.view.InputDevice.KEYBOARD_TYPE_ALPHABETIC
+            val mouse = d.supportsSource(android.view.InputDevice.SOURCE_MOUSE)
+            when {
+                keyboard && mouse -> d.name to tr("Keyboard + mouse", "Teclado + mouse")
+                keyboard -> d.name to tr("Keyboard", "Teclado")
+                mouse -> d.name to "Mouse"
+                else -> null
+            }
+        }
+        .distinctBy { it.first }

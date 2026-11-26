@@ -51,7 +51,7 @@ import kotlin.math.roundToInt
 
 /** Desenho dos controles durante a partida (só visual), com a opacidade escolhida. */
 @Composable
-fun PlayControls(mapping: HudMapping, opacity: Float, show: Boolean, locked: Boolean, lockLabel: String?, devices: InputSummary, stats: GameStats? = null) {
+fun PlayControls(mapping: HudMapping, opacity: Float, show: Boolean, locked: Boolean, lockLabel: String?, devices: InputSummary, stats: GameStats? = null, layer: Int = 0) {
     Box(Modifier.fillMaxSize()) {
         if (stats != null) StatsLayer(stats)
         val missing = when {
@@ -73,7 +73,7 @@ fun PlayControls(mapping: HudMapping, opacity: Float, show: Boolean, locked: Boo
             )
         }
         if (show) {
-            if (opacity > 0f) mapping.components.forEach { c -> ControlGlyph(c, Modifier.alpha(opacity.coerceIn(0f, 1f))) }
+            if (opacity > 0f) mapping.components.filter { it.layer == 0 || it.layer == layer }.forEach { c -> ControlGlyph(c, Modifier.alpha(opacity.coerceIn(0f, 1f))) }
         }
         if (locked) {
             Row(
@@ -147,6 +147,8 @@ fun ControlGlyph(
         MappingType.Dpad -> Color(0x380B101D)
         MappingType.RepeatTap -> Color(0x88152955)
         MappingType.Button -> Color(0x780B101D)
+        MappingType.LayerSwitch -> Color(0x88302060)
+        MappingType.WheelCycle -> Color(0x88203040)
     }
     val textSize = (sizeDp * 0.25f).coerceIn(8.5f, 13.5f).sp
     Box(
@@ -196,6 +198,14 @@ fun ControlGlyph(
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                     )
+                }
+                MappingType.WheelCycle -> Text(
+                    "⇅ " + (if (c.cycleIds.isEmpty()) "…" else c.cycleIds.size.toString()),
+                    color = Color.White, fontSize = textSize, fontWeight = FontWeight.Bold, maxLines = 1,
+                )
+                MappingType.LayerSwitch -> androidx.compose.foundation.layout.Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("L${c.targetLayer}", color = Color.White.copy(alpha = 0.7f), fontSize = (textSize.value * 0.75f).sp, fontWeight = FontWeight.Bold)
+                    BindingFace(c.binding, listening, textSize, sizeDp)
                 }
                 else -> BindingFace(c.binding, listening, textSize, sizeDp)
             }
@@ -265,7 +275,7 @@ private fun BindingFace(b: InputBinding, listening: Boolean, textSize: androidx.
         MouseButton.Left -> R.drawable.ic_mouse_left
         MouseButton.Right -> R.drawable.ic_mouse_right
         MouseButton.Middle -> R.drawable.ic_mouse_middle
-        MouseButton.None -> null
+        MouseButton.WheelUp, MouseButton.WheelDown, MouseButton.None -> null
     }
     if (mouseIcon != null) {
         Icon(painterResource(mouseIcon), contentDescription = b.label(), tint = if (listening) NeonCyan else Color.White, modifier = Modifier.size((sizeDp * 0.5f).coerceIn(14f, 26f).dp))

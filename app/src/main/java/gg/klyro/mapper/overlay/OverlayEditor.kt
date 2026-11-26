@@ -1,5 +1,6 @@
 package gg.klyro.mapper.overlay
 
+import gg.klyro.mapper.mapping.Trigger
 import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -131,6 +132,8 @@ private val PALETTE = listOf(
     PaletteItem(MappingType.Aim, R.string.type_aim, R.drawable.gi_aim),
     PaletteItem(MappingType.FireButton, R.string.type_fire, R.drawable.gi_fire),
     PaletteItem(MappingType.MouseUnlock, R.string.type_unlock, R.drawable.gi_unlock),
+    PaletteItem(MappingType.WheelCycle, R.string.type_wheel_cycle, R.drawable.gi_repeat),
+    PaletteItem(MappingType.LayerSwitch, R.string.type_layer, R.drawable.gi_reload),
     PaletteItem(MappingType.Button, R.string.action_jump, R.drawable.gi_jump, R.string.action_jump),
     PaletteItem(MappingType.Button, R.string.action_crouch, R.drawable.gi_crouch, R.string.action_crouch),
     PaletteItem(MappingType.Button, R.string.action_reload, R.drawable.gi_reload, R.string.action_reload),
@@ -600,6 +603,7 @@ fun OverlayEditor(
             ) {
                 ControlPanel(
                     c = selected,
+                    all = mapping.components,
                     slot = slot,
                     listening = listening,
                     onHide = { panelOpen = false },
@@ -1246,6 +1250,7 @@ private fun Palette(
 @Composable
 private fun ControlPanel(
     c: MappingComponent,
+    all: List<MappingComponent>,
     slot: Slot,
     listening: Boolean,
     onHide: () -> Unit,
@@ -1310,6 +1315,37 @@ private fun ControlPanel(
             if (listening) {
                 TextButton(onClick = onCancelListen, contentPadding = PaddingValues(0.dp)) {
                     Text(stringResource(R.string.panel_cancel_listen))
+                }
+            }
+        } else if (c.type == MappingType.WheelCycle) {
+            PanelLabel(tr("Buttons in the cycle", "Botões do ciclo"), null)
+            Text(
+                tr("Tap the buttons in order. Wheel forward goes to the next, back goes to the previous.", "Toque nos botões na ordem. Rodinha pra frente vai pro próximo, pra trás volta um."),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            val options = all.filter { it.id != c.id && it.type in setOf(MappingType.Button, MappingType.FireButton, MappingType.RepeatTap) }
+            if (options.isEmpty()) {
+                Text(tr("Add some tap buttons first.", "Adicione botões de toque primeiro."), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+            }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
+                options.forEach { o ->
+                    val pos = c.cycleIds.indexOf(o.id)
+                    val on = pos >= 0
+                    Surface(
+                        onClick = {
+                            onUpdate { it.copy(cycleIds = if (on) it.cycleIds - o.id else it.cycleIds + o.id) }
+                        },
+                        shape = RoundedCornerShape(6.dp),
+                        color = if (on) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
+                    ) {
+                        Text(
+                            (if (on) "${pos + 1}. " else "") + (if (o.binding.isSet) o.binding.label() else (o.label.ifBlank { "…" })),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        )
+                    }
                 }
             }
         } else if (c.type == MappingType.Aim) {
@@ -1389,7 +1425,7 @@ private fun ControlPanel(
                 val allowedMouse = if (c.type == MappingType.MouseUnlock) {
                     listOf(MouseButton.Right to "Mouse-R", MouseButton.Middle to "Mouse-M")
                 } else {
-                    listOf(MouseButton.Left to "Mouse-L", MouseButton.Right to "Mouse-R", MouseButton.Middle to "Mouse-M")
+                    listOf(MouseButton.Left to "Mouse-L", MouseButton.Right to "Mouse-R", MouseButton.Middle to "Mouse-M", MouseButton.WheelUp to "Wheel ↑", MouseButton.WheelDown to "Wheel ↓")
                 }
                 allowedMouse.forEach { (b, name) ->
                     val isSel = c.binding.mouse == b
@@ -1473,6 +1509,36 @@ private fun ControlPanel(
                 KlyroSlider(value = c.sensitivity, range = 0.3f..1f, onChange = onSensitivity)
             }
             else -> Unit
+        }
+
+        if (c.type in setOf(MappingType.Button, MappingType.FireButton, MappingType.RepeatTap)) {
+            PanelLabel(tr("Trigger", "Disparo"), null)
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
+                listOf(
+                    Trigger.Press to tr("Hold", "Segurar"),
+                    Trigger.Tap to tr("Tap", "Toque"),
+                    Trigger.Hold to tr("Long", "Longo"),
+                    Trigger.DoubleTap to tr("Double", "Duplo"),
+                ).forEach { (t, name) ->
+                    PanelChip(name, c.trigger == t, Modifier.weight(1f)) { onUpdate { it.copy(trigger = t) } }
+                }
+            }
+            if (c.trigger == Trigger.Tap || c.trigger == Trigger.Hold) {
+                PanelLabel(tr("Hold time", "Tempo de segurar"), "${c.holdMs} ms")
+                KlyroSlider(value = c.holdMs.toFloat(), range = 150f..1000f, onChange = { v -> onUpdate { it.copy(holdMs = v.toInt()) } })
+            }
+        }
+        if (c.type == MappingType.LayerSwitch) {
+            PanelLabel(tr("Turns on layer", "Liga a camada"), null)
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
+                (1..3).forEach { l -> PanelChip("L$l", c.targetLayer == l, Modifier.weight(1f)) { onUpdate { it.copy(targetLayer = l) } } }
+            }
+        } else {
+            PanelLabel(tr("Layer", "Camada"), null)
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
+                PanelChip(tr("Always", "Sempre"), c.layer == 0, Modifier.weight(1.4f)) { onUpdate { it.copy(layer = 0) } }
+                (1..3).forEach { l -> PanelChip("L$l", c.layer == l, Modifier.weight(1f)) { onUpdate { it.copy(layer = l) } } }
+            }
         }
 
         PanelLabel(tr("Color", "Cor"), null)
@@ -1576,6 +1642,8 @@ private fun typeName(t: MappingType) = when (t) {
     MappingType.Aim -> R.string.type_aim
     MappingType.FireButton -> R.string.type_fire
     MappingType.MouseUnlock -> R.string.type_unlock
+    MappingType.LayerSwitch -> R.string.type_layer
+    MappingType.WheelCycle -> R.string.type_wheel_cycle
 }
 
 /** Cores que o usuário pode dar a um botão (0 = automática pelo tipo). */
@@ -1609,5 +1677,24 @@ private fun PanelSwitch(title: String, note: String?, checked: Boolean, onChange
             if (note != null) Text(note, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         androidx.compose.material3.Switch(checked = checked, onCheckedChange = onChange)
+    }
+}
+
+@Composable
+private fun PanelChip(text: String, on: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(6.dp),
+        color = if (on) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh,
+        modifier = modifier,
+    ) {
+        Text(
+            text,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            modifier = Modifier.padding(vertical = 5.dp),
+        )
     }
 }
